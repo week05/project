@@ -17,11 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class LikeController {
     private final LikesService likesService;
 
-    @PostMapping("/post/{postid}/like")
+    @PostMapping("/auth/post/{postid}/like")
     public ResponseDto<?> Likes(@PathVariable Long postid, @AuthenticationPrincipal UserDetailsImpl userDetails){
         return likesService.liksesUp(postid,userDetails);
     }
-
-//    @DeleteMapping("/post/{postid}/like")
-//    public  ResponseDto<?>
 }

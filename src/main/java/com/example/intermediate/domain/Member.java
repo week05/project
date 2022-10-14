@@ -1,12 +1,11 @@
 package com.example.intermediate.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import java.util.List;
 import java.util.Objects;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,6 +30,15 @@ public class Member extends Timestamped {
   @Column(nullable = false)
   @JsonIgnore
   private String password;
+
+  @OneToMany(mappedBy = "member",fetch = FetchType.EAGER)
+  private List<Post> posts;
+
+//  @OneToMany(mappedBy = "member",fetch = FetchType.EAGER)
+//  private List<Comment> comments;
+
+
+
 
   @Override
   public boolean equals(Object o) {
