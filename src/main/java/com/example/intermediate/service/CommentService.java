@@ -6,6 +6,7 @@ import com.example.intermediate.domain.Comment;
 import com.example.intermediate.domain.Member;
 import com.example.intermediate.domain.Post;
 import com.example.intermediate.controller.request.CommentRequestDto;
+import com.example.intermediate.domain.UserDetailsImpl;
 import com.example.intermediate.jwt.TokenProvider;
 import com.example.intermediate.repository.CommentRepository;
 import java.util.ArrayList;
@@ -21,10 +22,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class CommentService {
 
   private final CommentRepository commentRepository;
-
   private final TokenProvider tokenProvider;
   private final PostService postService;
 
+  // 댓글 작성
   @Transactional
   public ResponseDto<?> createComment(CommentRequestDto requestDto, HttpServletRequest request) {
     if (null == request.getHeader("Refresh-Token")) {
@@ -64,6 +65,32 @@ public class CommentService {
     );
   }
 
+  // 작성한 댓글 조회 (마이페이지)
+//  @Transactional(readOnly = true)
+//  public ResponseDto<?> getMyCommentsByPost(UserDetailsImpl userDetails) {
+//    Post post = postService.isPresentPost(postId);
+//    if (null == post) {
+//      return ResponseDto.fail("NOT_FOUND", "존재하지 않는 게시글 id 입니다.");
+//    }
+//
+//    List<Comment> commentList = commentRepository.findAllByPost(post);
+//    List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();
+//
+//    for (Comment comment : commentList) {
+//      commentResponseDtoList.add(
+//              CommentResponseDto.builder()
+//                      .id(comment.getId())
+//                      .author(comment.getMember().getNickname())
+//                      .content(comment.getContent())
+//                      .createdAt(comment.getCreatedAt())
+//                      .modifiedAt(comment.getModifiedAt())
+//                      .build()
+//      );
+//    }
+//    return ResponseDto.success(commentResponseDtoList);
+//  }
+
+  // 전체 댓글 조회
   @Transactional(readOnly = true)
   public ResponseDto<?> getAllCommentsByPost(Long postId) {
     Post post = postService.isPresentPost(postId);

@@ -2,9 +2,11 @@ package com.example.intermediate.controller;
 
 import com.example.intermediate.controller.response.ResponseDto;
 import com.example.intermediate.controller.request.CommentRequestDto;
+import com.example.intermediate.domain.UserDetailsImpl;
 import com.example.intermediate.service.CommentService;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +24,14 @@ public class CommentController {
       HttpServletRequest request) {
     return commentService.createComment(requestDto, request);
   }
+
+  // 작성한 댓글 조회 (마이페이지)
+//  @GetMapping(value = "/comment")
+//  public ResponseDto<?> getMyComments(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+//
+//    return commentService.getMyCommentsByPost(userDetails);
+//  }
+
 
   // 전체 댓글 조회
   @GetMapping(value = "/comment/{id}")
