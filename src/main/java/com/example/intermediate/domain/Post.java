@@ -4,6 +4,7 @@ import com.example.intermediate.controller.request.PostRequestDto;
 import java.util.List;
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -34,6 +35,7 @@ public class Post extends Timestamped {
 
   @JoinColumn(name = "member_id", nullable = false)
   @ManyToOne(fetch = FetchType.LAZY)
+  @JsonManagedReference
   private Member member;
 
   @Enumerated(EnumType.STRING)
