@@ -16,23 +16,27 @@ public class CommentController {
 
   private final CommentService commentService;
 
+  // 댓글 작성
   @PostMapping(value = "/auth/comment")
   public ResponseDto<?> createComment(@RequestBody CommentRequestDto requestDto,
       HttpServletRequest request) {
     return commentService.createComment(requestDto, request);
   }
 
+  // 전체 댓글 조회
   @GetMapping(value = "/comment/{id}")
   public ResponseDto<?> getAllComments(@PathVariable Long id) {
     return commentService.getAllCommentsByPost(id);
   }
 
+  // 댓글 수정
   @PutMapping(value = "/auth/comment/{id}")
   public ResponseDto<?> updateComment(@PathVariable Long id, @RequestBody CommentRequestDto requestDto,
       HttpServletRequest request) {
     return commentService.updateComment(id, requestDto, request);
   }
 
+  // 댓글 삭제
   @DeleteMapping(value = "/auth/comment/{id}")
   public ResponseDto<?> deleteComment(@PathVariable Long id,
       HttpServletRequest request) {
