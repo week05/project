@@ -1,5 +1,6 @@
 package com.example.intermediate.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.List;
@@ -32,6 +33,7 @@ public class Member extends Timestamped {
   private String password;
 
   @OneToMany(mappedBy = "member",fetch = FetchType.EAGER)
+  @JsonBackReference
   private List<Post> posts;
 
   @OneToMany(mappedBy = "member",fetch = FetchType.LAZY)
