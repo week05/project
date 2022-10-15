@@ -2,6 +2,7 @@ package com.example.intermediate.service;
 
 import com.example.intermediate.controller.response.CommentResponseDto;
 import com.example.intermediate.controller.response.PostResponseDto;
+import com.example.intermediate.domain.Category;
 import com.example.intermediate.domain.Comment;
 import com.example.intermediate.domain.Member;
 import com.example.intermediate.domain.Post;
@@ -48,6 +49,7 @@ public class PostService {
         .title(requestDto.getTitle())
         .content(requestDto.getContent())
         .member(member)
+        .category(requestDto.getCategory())
         .build();
     postRepository.save(post);
     return ResponseDto.success(
@@ -56,6 +58,7 @@ public class PostService {
             .title(post.getTitle())
             .content(post.getContent())
             .author(post.getMember().getNickname())
+            .category(post.getCategory())
             .createdAt(post.getCreatedAt())
             .modifiedAt(post.getModifiedAt())
             .build()
@@ -158,10 +161,19 @@ public class PostService {
       return ResponseDto.fail("BAD_REQUEST", "작성자만 삭제할 수 있습니다.");
     }
 
+
     postRepository.delete(post);
     return ResponseDto.success("delete success");
   }
-
+  //카테고리 번호로 게시글 불러오기
+  @Transactional
+  public ResponseDto<?> categoryAllGet(Long id){
+    System.out.println("id" + id);
+    Category cos=Category.findById(id);
+    System.out.println("카테고리 명 : "+cos);
+    System.out.println("디비 데이타"+postRepository.findByCategory(cos));
+    return ResponseDto.success(postRepository.findByCategory(cos));
+  }
   @Transactional(readOnly = true)
   public Post isPresentPost(Long id) {
     Optional<Post> optionalPost = postRepository.findById(id);

@@ -34,8 +34,8 @@ public class Member extends Timestamped {
   @OneToMany(mappedBy = "member",fetch = FetchType.EAGER)
   private List<Post> posts;
 
-//  @OneToMany(mappedBy = "member",fetch = FetchType.EAGER)
-//  private List<Comment> comments;
+  @OneToMany(mappedBy = "member",fetch = FetchType.LAZY)
+  private List<Comment> comments;
 
 
 

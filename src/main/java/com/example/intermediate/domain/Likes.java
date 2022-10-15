@@ -25,5 +25,4 @@ public class Likes {
     @ManyToOne
     @JoinColumn(name="postId")
     private Post post;
-
 }
