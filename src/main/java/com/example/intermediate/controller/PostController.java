@@ -41,6 +41,8 @@ public class PostController {
     return postService.getPost(id);
   }
 
+
+
   // 작성한 게시글 조회 (마이페이지)
   // 조건 : 인증된 정보로 현재 로그인된 유저가 작성한 게시글을 특정하여 조회
   @GetMapping(value = "/auth/post")
@@ -48,6 +50,7 @@ public class PostController {
 
     return postService.getMyPost(userDetails);
   }
+
 
   // 게시글 전체 조회
   @GetMapping(value = "/posts")
