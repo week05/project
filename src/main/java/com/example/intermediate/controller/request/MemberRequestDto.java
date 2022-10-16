@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class MemberRequestDto {
 
   @NotBlank(message = "{nickname.notblank}")
-  @Pattern(regexp ="^[a-z]{4,12}$", message = "{nickname.option}" )
+  @Pattern(regexp ="^[a-zA-Z0-9]+@[a-zA-Z]+.[a-z]+${4,12}$", message = "{nickname.option}" )
   private String emailid;
 
   @NotBlank(message = "{nickname.notblank}")
