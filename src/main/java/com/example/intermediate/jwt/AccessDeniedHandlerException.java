@@ -16,12 +16,14 @@ public class AccessDeniedHandlerException implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response,
                        AccessDeniedException accessDeniedException) throws IOException {
+
         response.setContentType("application/json;charset=UTF-8");
         response.getWriter().println(
                 new ObjectMapper().writeValueAsString(
                         ResponseDto.fail("BAD_REQUEST", "로그인 해주시길 바래요.")
                 )
         );
+
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
     }
 }

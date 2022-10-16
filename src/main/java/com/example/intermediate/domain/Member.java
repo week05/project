@@ -25,7 +25,10 @@ public class Member extends Timestamped {
   private Long id;
 
   @Column(nullable = false)
-  private String nickname;
+  private String emailid;
+
+  @Column(nullable = false)
+  private String name;
 
   @Column(nullable = false)
   @JsonIgnore
@@ -36,9 +39,6 @@ public class Member extends Timestamped {
 
 //  @OneToMany(mappedBy = "member",fetch = FetchType.EAGER)
 //  private List<Comment> comments;
-
-
-
 
   @Override
   public boolean equals(Object o) {

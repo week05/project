@@ -1,14 +1,17 @@
 package com.example.intermediate.service;
 
+import com.example.intermediate.controller.response.PostResponseDto;
 import com.example.intermediate.controller.response.ResponseDto;
 import com.example.intermediate.domain.Likes;
 import com.example.intermediate.domain.Member;
 import com.example.intermediate.domain.Post;
 import com.example.intermediate.domain.UserDetailsImpl;
 import com.example.intermediate.repository.LikesRepository;
+import com.example.intermediate.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,6 +20,8 @@ import java.util.Optional;
 public class LikesService {
     private final LikesRepository likesRepository;
     private final PostService postService;
+    private final PostRepository postRepository;
+
     public ResponseDto<?> liksesUp (Long postId , UserDetailsImpl userDetails) {
         System.out.println(postId);
         Member member = userDetails.getMember();
@@ -36,5 +41,37 @@ public class LikesService {
             likesRepository.save(likes);
             return ResponseDto.success(true);
         }
+    }
+
+    // 내가 좋아요한 게시글들 조회
+    public ResponseDto<?> LikesPost(UserDetailsImpl userDetails){
+
+        List<Likes> likelist = likesRepository.findAllByMember(userDetails.getMember());
+
+        if(likelist.isEmpty()){
+            ResponseDto.fail("NOT_FOUND", "좋아요한 게시글이 없습니다.");
+        }
+
+        List<PostResponseDto> postResponseDtos = new ArrayList<>();
+
+        for(Likes like : likelist){
+            Post post = postRepository.findById(like.getPost().getId()).orElseThrow(
+                    () -> new NullPointerException("좋아요한 게시글이 아닙니다.")
+            );
+
+            postResponseDtos.add(
+                    PostResponseDto.builder()
+                            .id(post.getId())
+                            .title(post.getTitle())
+                            .content(post.getContent())
+                            .author(post.getMember().getEmailid())
+                            .createdAt(post.getCreatedAt())
+                            .modifiedAt(post.getModifiedAt())
+                            .build()
+            );
+        }
+
+        return ResponseDto.success(postResponseDtos);
+
     }
 }

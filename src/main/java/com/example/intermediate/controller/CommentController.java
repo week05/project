@@ -25,12 +25,12 @@ public class CommentController {
     return commentService.createComment(requestDto, request);
   }
 
+
   // 작성한 댓글 조회 (마이페이지)
-//  @GetMapping(value = "/comment")
-//  public ResponseDto<?> getMyComments(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-//
-//    return commentService.getMyCommentsByPost(userDetails);
-//  }
+  @GetMapping(value = "/auth/comment")
+  public ResponseDto<?> getMyComments(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+    return commentService.getMyCommentsByPost(userDetails);
+  }
 
 
   // 전체 댓글 조회
@@ -39,12 +39,14 @@ public class CommentController {
     return commentService.getAllCommentsByPost(id);
   }
 
+
   // 댓글 수정
   @PutMapping(value = "/auth/comment/{id}")
   public ResponseDto<?> updateComment(@PathVariable Long id, @RequestBody CommentRequestDto requestDto,
       HttpServletRequest request) {
     return commentService.updateComment(id, requestDto, request);
   }
+
 
   // 댓글 삭제
   @DeleteMapping(value = "/auth/comment/{id}")

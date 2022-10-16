@@ -25,16 +25,20 @@ public class Comment extends Timestamped {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+
   @JoinColumn(name = "member_id", nullable = false)
   @ManyToOne(fetch = FetchType.LAZY)
   private Member member;
+
 
   @JoinColumn(name = "post_id", nullable = false)
   @ManyToOne(fetch = FetchType.LAZY)
   private Post post;
 
+
   @Column(nullable = false)
   private String content;
+
 
   public void update(CommentRequestDto commentRequestDto) {
     this.content = commentRequestDto.getContent();
