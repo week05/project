@@ -12,7 +12,6 @@ import com.example.intermediate.jwt.TokenProvider;
 import com.example.intermediate.repository.CommentRepository;
 import com.example.intermediate.repository.PostRepository;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
@@ -67,7 +66,8 @@ public class PostService {
     );
   }
 
-  // 게시글 조회
+
+  // 지정 게시글 조회
   @Transactional(readOnly = true)
   public ResponseDto<?> getPost(Long id) {
     Post post = isPresentPost(id);
@@ -104,21 +104,22 @@ public class PostService {
   }
 
 
-  // 마이페이지 : 작성한 게시글 조회 (일반적인 게시글 조회가 아님)
+  // 작성한 게시글 조회 (마이페이지)
   @Transactional(readOnly = true)
   public ResponseDto<?> getMyPost(UserDetailsImpl userDetails) {
 
-    // 유저 ID로 게시글 존재 확인
-    // 해당 유저가 작성한 게시글이 여러개일 수 있으니 List로 받아준다.
+    // 현재 저장된 유저의 id로 작성된 post들 불러옴
     List<Post> posts = postRepository.findAllByMember_Id(userDetails.getMember().getId());
 
-    // 받아온 작성 게시글이 없으면 예외 처리
+    // 작성 post가 없으면 실패 처리
     if (posts.isEmpty()) {
       return ResponseDto.fail("NOT_FOUND", "해당 유저가 작성한 게시글이 존재하지 않습니다.");
     }
 
+    // 최종적으로 작성한 post들의 정보를 저장하여 출력하기 위한 postlist 생성
     List<PostResponseDto> postlist = new ArrayList<>();
 
+    // 작성 post들의 각 정보를 PostResponseDto에 기록하여 postlist에 저장
     for(Post post : posts){
       postlist.add(
               PostResponseDto.builder()
@@ -132,7 +133,7 @@ public class PostService {
       );
     }
 
-    // 출력
+    // 최종적으로 저장된 작성 post들을 출력
     return ResponseDto.success(postlist);
   }
 

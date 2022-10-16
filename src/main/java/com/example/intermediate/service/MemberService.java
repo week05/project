@@ -2,7 +2,6 @@ package com.example.intermediate.service;
 
 import com.example.intermediate.controller.response.MemberResponseDto;
 import com.example.intermediate.domain.Member;
-import com.example.intermediate.domain.RefreshToken;
 import com.example.intermediate.controller.request.LoginRequestDto;
 import com.example.intermediate.controller.request.MemberRequestDto;
 import com.example.intermediate.controller.response.ResponseDto;
@@ -15,9 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +26,7 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
 
+    // 계정 생성
     @Transactional
     public ResponseDto<?> createMember(MemberRequestDto requestDto) {
         if (null != isPresentMember(requestDto.getEmailid())) {
@@ -61,6 +58,7 @@ public class MemberService {
         );
     }
 
+    // 로그인
     @Transactional
     public ResponseDto<?> login(LoginRequestDto requestDto, HttpServletResponse response) {
         Member member = isPresentMember(requestDto.getEmailid());
@@ -88,6 +86,7 @@ public class MemberService {
     }
 
 
+    // 로그아웃
     public ResponseDto<?> logout(HttpServletRequest request) {
         if (!tokenProvider.validateToken(request.getHeader("Refresh-Token"))) {
             return ResponseDto.fail("INVALID_TOKEN", "Token이 유효하지 않습니다.");

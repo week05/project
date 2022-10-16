@@ -12,7 +12,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class MemberResponseDto {
   private Long id;
+  // email 아이디
   private String emailid;
+  //추가된 name 속성
   private String name;
   private LocalDateTime createdAt;
   private LocalDateTime modifiedAt;

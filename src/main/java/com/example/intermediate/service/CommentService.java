@@ -69,14 +69,19 @@ public class CommentService {
   @Transactional(readOnly = true)
   public ResponseDto<?> getMyCommentsByPost(UserDetailsImpl userDetails) {
 
+    // 현재 로그인된 유저의 id를 comment DB에 대조하여 적은 comment들 리스트화
+    // list화한 이유 : 작성한 comment 가 두개 이상일 수도 있기 때문에
     List<Comment> comments = commentRepository.findAllByMember_id(userDetails.getMember().getId());
 
+    // 작성한 comment 가 없을 경우 실패 처리
     if (null == comments) {
       return ResponseDto.fail("NOT_FOUND", "작성한 게시글이 존재하지 않습니다.");
     }
 
+    // list화 된 comment 들을 최종적으로 담아 출력할 commentlist 생성
     List<CommentResponseDto> commentlist = new ArrayList<>();
 
+    // 작성한 comment들의 각 정보들을 CommentResponseDto 에 저장하여 commentlist에 최종적으로 저장
     for(Comment comment : comments){
       commentlist.add(
               CommentResponseDto.builder()
@@ -89,6 +94,7 @@ public class CommentService {
       );
     }
 
+    // 최종적으로 작성한 모든 comment들의 정보가 저장된 commentlist 출력
     return ResponseDto.success(commentlist);
 
 

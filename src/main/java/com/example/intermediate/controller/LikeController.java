@@ -21,7 +21,7 @@ public class LikeController {
         return likesService.liksesUp(postid, userDetails);
     }
 
-    // 좋아요 한 게시글 조회
+    // 좋아요 한 게시글 조회 (마이페이지)
     @GetMapping("/auth/post/like")
     public ResponseDto<?> LikesPost(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return likesService.LikesPost(userDetails);
