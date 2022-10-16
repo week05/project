@@ -70,7 +70,7 @@ public class LikesService {
                             .id(post.getId())
                             .title(post.getTitle())
                             .content(post.getContent())
-                            .author(post.getMember().getEmailid())
+                            .author(post.getMember().getNickname())
                             .createdAt(post.getCreatedAt())
                             .modifiedAt(post.getModifiedAt())
                             .build()

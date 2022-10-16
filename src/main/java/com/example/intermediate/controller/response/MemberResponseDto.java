@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 public class MemberResponseDto {
   private Long id;
   // email 아이디
-  private String emailid;
+  private String nickname;
   //추가된 name 속성
   private String name;
   private LocalDateTime createdAt;

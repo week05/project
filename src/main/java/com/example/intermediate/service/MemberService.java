@@ -29,7 +29,7 @@ public class MemberService {
     // 계정 생성
     @Transactional
     public ResponseDto<?> createMember(MemberRequestDto requestDto) {
-        if (null != isPresentMember(requestDto.getEmailid())) {
+        if (null != isPresentMember(requestDto.getNickname())) {
             return ResponseDto.fail("DUPLICATED_NICKNAME",
                     "중복된 닉네임 입니다.");
         }
@@ -40,7 +40,7 @@ public class MemberService {
         }
 
         Member member = Member.builder()
-                .emailid(requestDto.getEmailid())
+                .nickname(requestDto.getNickname())
                 .name(requestDto.getName())
                 .password(passwordEncoder.encode(requestDto.getPassword()))
                 .build();
@@ -50,7 +50,7 @@ public class MemberService {
         return ResponseDto.success(
                 MemberResponseDto.builder()
                         .id(member.getId())
-                        .emailid(member.getEmailid())
+                        .nickname(member.getNickname())
                         .name(member.getName())
                         .createdAt(member.getCreatedAt())
                         .modifiedAt(member.getModifiedAt())
@@ -61,7 +61,7 @@ public class MemberService {
     // 로그인
     @Transactional
     public ResponseDto<?> login(LoginRequestDto requestDto, HttpServletResponse response) {
-        Member member = isPresentMember(requestDto.getEmailid());
+        Member member = isPresentMember(requestDto.getNickname());
         if (null == member) {
             return ResponseDto.fail("MEMBER_NOT_FOUND",
                     "사용자를 찾을 수 없습니다.");
@@ -77,7 +77,7 @@ public class MemberService {
         return ResponseDto.success(
                 MemberResponseDto.builder()
                         .id(member.getId())
-                        .emailid(member.getEmailid())
+                        .nickname(member.getNickname())
                         .name(member.getName())
                         .createdAt(member.getCreatedAt())
                         .modifiedAt(member.getModifiedAt())
@@ -101,8 +101,8 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
-    public Member isPresentMember(String emailid) {
-        Optional<Member> optionalMember = memberRepository.findByEmailid(emailid);
+    public Member isPresentMember(String nickname) {
+        Optional<Member> optionalMember = memberRepository.findByNickname(nickname);
         return optionalMember.orElse(null);
     }
 
