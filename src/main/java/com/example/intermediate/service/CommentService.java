@@ -21,9 +21,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class CommentService {
 
   private final CommentRepository commentRepository;
+
   private final TokenProvider tokenProvider;
   private final PostService postService;
 
+  // 댓글 작성
   @Transactional
   public ResponseDto<?> createComment(CommentRequestDto requestDto, HttpServletRequest request) {
     if (null == request.getHeader("Refresh-Token")) {
@@ -80,6 +82,43 @@ public class CommentService {
                       .modifiedAt(comment.getModifiedAt())
                       .build());
   }
+
+  // 작성한 댓글 조회 (마이페이지)
+  @Transactional(readOnly = true)
+  public ResponseDto<?> getMyCommentsByPost(UserDetailsImpl userDetails) {
+
+    // 현재 로그인된 유저의 id를 comment DB에 대조하여 적은 comment들 리스트화
+    // list화한 이유 : 작성한 comment 가 두개 이상일 수도 있기 때문에
+    List<Comment> comments = commentRepository.findAllByMember_id(userDetails.getMember().getId());
+
+    // 작성한 comment 가 없을 경우 실패 처리
+    if (null == comments) {
+      return ResponseDto.fail("NOT_FOUND", "작성한 게시글이 존재하지 않습니다.");
+    }
+
+    // list화 된 comment 들을 최종적으로 담아 출력할 commentlist 생성
+    List<CommentResponseDto> commentlist = new ArrayList<>();
+
+    // 작성한 comment들의 각 정보들을 CommentResponseDto 에 저장하여 commentlist에 최종적으로 저장
+    for(Comment comment : comments){
+      commentlist.add(
+              CommentResponseDto.builder()
+                      .id(comment.getId())
+                      .author(comment.getMember().getNickname())
+                      .content(comment.getContent())
+                      .createdAt(comment.getCreatedAt())
+                      .modifiedAt(comment.getModifiedAt())
+                      .build()
+      );
+    }
+
+    // 최종적으로 작성한 모든 comment들의 정보가 저장된 commentlist 출력
+    return ResponseDto.success(commentlist);
+
+
+  }
+
+  // 전체 댓글 조회
 //게시글 전체
   @Transactional(readOnly = true)
   public ResponseDto<?> getAllCommentsByPost(Long postId) {
@@ -92,7 +131,7 @@ public class CommentService {
     List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();
 
     for (Comment comment : commentList) {
-        commentResponseDtoList.add(
+      commentResponseDtoList.add(
           CommentResponseDto.builder()
               .id(comment.getId())
               .author(comment.getMember().getNickname())
@@ -104,7 +143,8 @@ public class CommentService {
     }
     return ResponseDto.success(commentResponseDtoList);
   }
-//게시글 수정
+
+  // 댓글 수정
   @Transactional
   public ResponseDto<?> updateComment(Long id, CommentRequestDto requestDto, HttpServletRequest request) {
     if (null == request.getHeader("Refresh-Token")) {
@@ -147,7 +187,9 @@ public class CommentService {
             .build()
     );
   }
-//게시글 삭제
+
+
+  // 댓글 삭제
   @Transactional
   public ResponseDto<?> deleteComment(Long id, HttpServletRequest request) {
     if (null == request.getHeader("Refresh-Token")) {

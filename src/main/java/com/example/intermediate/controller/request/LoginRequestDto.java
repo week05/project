@@ -1,6 +1,5 @@
 package com.example.intermediate.controller.request;
 
-import javax.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,8 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class LoginRequestDto {
 
+  // email 아이디로 로그인
   private String nickname;
-
   private String password;
 
 }

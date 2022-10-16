@@ -31,6 +31,9 @@ public class Member extends Timestamped {
   private String nickname;
 
   @Column(nullable = false)
+  private String name;
+
+  @Column(nullable = false)
   @JsonIgnore
   private String password;
 
@@ -44,9 +47,6 @@ public class Member extends Timestamped {
   @OneToMany(mappedBy = "member",fetch = FetchType.LAZY)
   @JsonBackReference
   private List<Comment> comments;
-
-
-
 
   @Override
   public boolean equals(Object o) {

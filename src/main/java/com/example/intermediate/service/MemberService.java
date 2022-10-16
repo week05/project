@@ -36,81 +36,82 @@ public class MemberService {
           "중복된 닉네임 입니다.");
     }
 
-    if(null != isPresentMember(requestDto.getEmail())){
-      return  ResponseDto.fail("DUPLICATED_EMAIIL","중복된 이메일입니다.");
-    }
-
     if (!requestDto.getPassword().equals(requestDto.getPasswordConfirm())) {
       return ResponseDto.fail("PASSWORDS_NOT_MATCHED",
           "비밀번호와 비밀번호 확인이 일치하지 않습니다.");
     }
 
-    Member member = Member.builder()
-            .nickname(requestDto.getNickname())
-            .password(passwordEncoder.encode(requestDto.getPassword()))
-            .email(requestDto.getEmail())
-            .build();
-    memberRepository.save(member);
-    return ResponseDto.success(
-        MemberResponseDto.builder()
-            .id(member.getId())
-            .nickname(member.getNickname())
-            .email(member.getEmail())
-            .createdAt(member.getCreatedAt())
-            .modifiedAt(member.getModifiedAt())
-            .build()
-    );
-  }
+        Member member = Member.builder()
+                .nickname(requestDto.getNickname())
+                .name(requestDto.getName())
+                .password(passwordEncoder.encode(requestDto.getPassword()))
+                .build();
 
-  @Transactional
-  public ResponseDto<?> login(LoginRequestDto requestDto, HttpServletResponse response) {
-    Member member = isPresentMember(requestDto.getNickname());
-    if (null == member) {
-      return ResponseDto.fail("MEMBER_NOT_FOUND",
-          "사용자를 찾을 수 없습니다.");
+        memberRepository.save(member);
+
+        return ResponseDto.success(
+                MemberResponseDto.builder()
+                        .id(member.getId())
+                        .nickname(member.getNickname())
+                        .name(member.getName())
+                        .createdAt(member.getCreatedAt())
+                        .modifiedAt(member.getModifiedAt())
+                        .build()
+        );
     }
 
-    if (!member.validatePassword(passwordEncoder, requestDto.getPassword())) {
-      return ResponseDto.fail("INVALID_MEMBER", "사용자를 찾을 수 없습니다.");
+    // 로그인
+    @Transactional
+    public ResponseDto<?> login(LoginRequestDto requestDto, HttpServletResponse response) {
+        Member member = isPresentMember(requestDto.getNickname());
+        if (null == member) {
+            return ResponseDto.fail("MEMBER_NOT_FOUND",
+                    "사용자를 찾을 수 없습니다.");
+        }
+
+        if (!member.validatePassword(passwordEncoder, requestDto.getPassword())) {
+            return ResponseDto.fail("INVALID_MEMBER", "사용자를 찾을 수 없습니다.");
+        }
+
+        TokenDto tokenDto = tokenProvider.generateTokenDto(member);
+        tokenToHeaders(tokenDto, response);
+
+        return ResponseDto.success(
+                MemberResponseDto.builder()
+                        .id(member.getId())
+                        .nickname(member.getNickname())
+                        .name(member.getName())
+                        .createdAt(member.getCreatedAt())
+                        .modifiedAt(member.getModifiedAt())
+                        .build()
+        );
     }
 
-    TokenDto tokenDto = tokenProvider.generateTokenDto(member);
-    tokenToHeaders(tokenDto, response);
 
-    return ResponseDto.success(
-        MemberResponseDto.builder()
-            .id(member.getId())
-            .nickname(member.getNickname())
-            .createdAt(member.getCreatedAt())
-            .modifiedAt(member.getModifiedAt())
-            .build()
-    );
-  }
+    // 로그아웃
+    public ResponseDto<?> logout(HttpServletRequest request) {
+        if (!tokenProvider.validateToken(request.getHeader("Refresh-Token"))) {
+            return ResponseDto.fail("INVALID_TOKEN", "Token이 유효하지 않습니다.");
+        }
+        Member member = tokenProvider.getMemberFromAuthentication();
+        if (null == member) {
+            return ResponseDto.fail("MEMBER_NOT_FOUND",
+                    "사용자를 찾을 수 없습니다.");
+        }
 
-
-  public ResponseDto<?> logout(HttpServletRequest request) {
-    if (!tokenProvider.validateToken(request.getHeader("Refresh-Token"))) {
-      return ResponseDto.fail("INVALID_TOKEN", "Token이 유효하지 않습니다.");
-    }
-    Member member = tokenProvider.getMemberFromAuthentication();
-    if (null == member) {
-      return ResponseDto.fail("MEMBER_NOT_FOUND",
-          "사용자를 찾을 수 없습니다.");
+        return tokenProvider.deleteRefreshToken(member);
     }
 
-    return tokenProvider.deleteRefreshToken(member);
-  }
+    @Transactional(readOnly = true)
+    public Member isPresentMember(String nickname) {
+        Optional<Member> optionalMember = memberRepository.findByNickname(nickname);
+        return optionalMember.orElse(null);
+    }
 
-  @Transactional(readOnly = true)
-  public Member isPresentMember(String nickname) {
-    Optional<Member> optionalMember = memberRepository.findByNickname(nickname);
-    return optionalMember.orElse(null);
-  }
-
-  public void tokenToHeaders(TokenDto tokenDto, HttpServletResponse response) {
-    response.addHeader("Authorization", "Bearer " + tokenDto.getAccessToken());
-    response.addHeader("Refresh-Token", tokenDto.getRefreshToken());
-    response.addHeader("Access-Token-Expire-Time", tokenDto.getAccessTokenExpiresIn().toString());
-  }
+    public void tokenToHeaders(TokenDto tokenDto, HttpServletResponse response) {
+        response.addHeader("Authorization", "Bearer " + tokenDto.getAccessToken());
+        response.addHeader("Refresh-Token", tokenDto.getRefreshToken());
+        response.addHeader("Access-Token-Expire-Time", tokenDto.getAccessTokenExpiresIn().toString());
+    }
 
 }
