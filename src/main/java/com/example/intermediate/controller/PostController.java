@@ -47,6 +47,11 @@ public class PostController {
   public ResponseDto<?> getUserPost(@AuthenticationPrincipal UserDetailsImpl userDetails) {
     return postService.getMyPost(userDetails);
   }
+  //카테고리 번호로 가져오기
+  @GetMapping(value="/post/category/{id}")
+  public ResponseDto<?> categoryAll(@PathVariable Long id){
+    return postService.categoryAllGet(id);
+  }
 
   // 게시글 전체 조회
   @GetMapping(value = "/posts")

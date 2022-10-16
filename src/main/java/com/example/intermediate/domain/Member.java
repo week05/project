@@ -37,9 +37,6 @@ public class Member extends Timestamped {
   @JsonIgnore
   private String password;
 
-  @Column(nullable = false)
-  private String email;
-
   @OneToMany(mappedBy = "member",fetch = FetchType.EAGER)
   @JsonBackReference
   private List<Post> posts;
