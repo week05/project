@@ -50,9 +50,8 @@ public class PostController {
 
   // 작성한 게시글 조회 (마이페이지)
   // 조건 : 인증된 정보로 현재 로그인된 유저가 작성한 게시글을 특정하여 조회
-  @GetMapping(value = "/post")
-  public ResponseDto<?> getPost(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-
+  @GetMapping(value = "/auth/post")
+  public ResponseDto<?> getUserPost(@AuthenticationPrincipal UserDetailsImpl userDetails) {
     return postService.getMyPost(userDetails);
   }
 

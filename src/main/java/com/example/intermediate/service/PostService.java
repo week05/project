@@ -2,15 +2,12 @@ package com.example.intermediate.service;
 
 import com.example.intermediate.controller.response.CommentResponseDto;
 import com.example.intermediate.controller.response.PostResponseDto;
-import com.example.intermediate.domain.Category;
-import com.example.intermediate.domain.Comment;
-import com.example.intermediate.domain.Member;
-import com.example.intermediate.domain.Post;
+import com.example.intermediate.domain.*;
 import com.example.intermediate.controller.request.PostRequestDto;
 import com.example.intermediate.controller.response.ResponseDto;
-import com.example.intermediate.domain.UserDetailsImpl;
 import com.example.intermediate.jwt.TokenProvider;
 import com.example.intermediate.repository.CommentRepository;
+import com.example.intermediate.repository.LikesRepository;
 import com.example.intermediate.repository.PostRepository;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +23,7 @@ public class PostService {
 
   private final PostRepository postRepository;
   private final CommentRepository commentRepository;
-
+  private final LikesRepository likesRepository;
   private final TokenProvider tokenProvider;
 
   // 게시글 작성
@@ -91,12 +88,14 @@ public class PostService {
                       .build()
       );
     }
-
+    //게시글 졸아요 리스트
+    List<Likes> likesCount=likesRepository.findByPost(post);
     return ResponseDto.success(
             PostResponseDto.builder()
                     .id(post.getId())
                     .title(post.getTitle())
                     .content(post.getContent())
+                    .likesCount((long) likesCount.size())
                     .commentResponseDtoList(commentResponseDtoList)
                     .author(post.getMember().getNickname())
                     .createdAt(post.getCreatedAt())
@@ -143,13 +142,15 @@ public class PostService {
                           .modifiedAt(comment.getModifiedAt())
                           .build()
           );
-
+          //게시글 졸아요 리스트
+          List<Likes> likesCount=likesRepository.findByPost(post);
           // 게시글 정보와 모든 댓글들의 정보가 담겨있는 commentResponseDtoList 를 저장
           PostResponseDtoList.add(
                   PostResponseDto.builder()
                           .id(post.getId())
                           .title(post.getTitle())
                           .content(post.getContent())
+                          .likesCount((long) likesCount.size())
                           .commentResponseDtoList(commentResponseDtoList)
                           .author(post.getMember().getNickname())
                           .createdAt(post.getCreatedAt())

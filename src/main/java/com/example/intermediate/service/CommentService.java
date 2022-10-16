@@ -80,7 +80,7 @@ public class CommentService {
                       .modifiedAt(comment.getModifiedAt())
                       .build());
   }
-
+//게시글 전체
   @Transactional(readOnly = true)
   public ResponseDto<?> getAllCommentsByPost(Long postId) {
     Post post = postService.isPresentPost(postId);
@@ -104,7 +104,7 @@ public class CommentService {
     }
     return ResponseDto.success(commentResponseDtoList);
   }
-
+//게시글 수정
   @Transactional
   public ResponseDto<?> updateComment(Long id, CommentRequestDto requestDto, HttpServletRequest request) {
     if (null == request.getHeader("Refresh-Token")) {
@@ -147,7 +147,7 @@ public class CommentService {
             .build()
     );
   }
-
+//게시글 삭제
   @Transactional
   public ResponseDto<?> deleteComment(Long id, HttpServletRequest request) {
     if (null == request.getHeader("Refresh-Token")) {

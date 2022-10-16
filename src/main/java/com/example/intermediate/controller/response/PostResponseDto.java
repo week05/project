@@ -20,6 +20,7 @@ public class PostResponseDto {
   private String author;
   private Category category;
   private List<CommentResponseDto> commentResponseDtoList;
+  private Long likesCount;
   private LocalDateTime createdAt;
   private LocalDateTime modifiedAt;
 }
