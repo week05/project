@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,12 +26,16 @@ public class Member extends Timestamped {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+
   @Column(nullable = false)
   private String nickname;
 
   @Column(nullable = false)
   @JsonIgnore
   private String password;
+
+  @Column(nullable = false)
+  private String email;
 
   @OneToMany(mappedBy = "member",fetch = FetchType.EAGER)
   @JsonBackReference

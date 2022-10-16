@@ -54,6 +54,7 @@ public class SecurityConfiguration {
         .sessionManagement()
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
+
         .and()
         .authorizeRequests()
         .antMatchers("/api/member/**").permitAll()

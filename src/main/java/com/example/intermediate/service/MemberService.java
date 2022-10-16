@@ -36,6 +36,10 @@ public class MemberService {
           "중복된 닉네임 입니다.");
     }
 
+    if(null != isPresentMember(requestDto.getEmail())){
+      return  ResponseDto.fail("DUPLICATED_EMAIIL","중복된 이메일입니다.");
+    }
+
     if (!requestDto.getPassword().equals(requestDto.getPasswordConfirm())) {
       return ResponseDto.fail("PASSWORDS_NOT_MATCHED",
           "비밀번호와 비밀번호 확인이 일치하지 않습니다.");
@@ -43,13 +47,15 @@ public class MemberService {
 
     Member member = Member.builder()
             .nickname(requestDto.getNickname())
-                .password(passwordEncoder.encode(requestDto.getPassword()))
-                    .build();
+            .password(passwordEncoder.encode(requestDto.getPassword()))
+            .email(requestDto.getEmail())
+            .build();
     memberRepository.save(member);
     return ResponseDto.success(
         MemberResponseDto.builder()
             .id(member.getId())
             .nickname(member.getNickname())
+            .email(member.getEmail())
             .createdAt(member.getCreatedAt())
             .modifiedAt(member.getModifiedAt())
             .build()
