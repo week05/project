@@ -25,6 +25,9 @@ public class Comment extends Timestamped {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  @Column
+  private Long responseTo;
+
   @JoinColumn(name = "member_id", nullable = false)
   @ManyToOne(fetch = FetchType.LAZY)
   private Member member;

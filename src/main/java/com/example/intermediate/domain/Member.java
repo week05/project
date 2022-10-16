@@ -37,6 +37,7 @@ public class Member extends Timestamped {
   private List<Post> posts;
 
   @OneToMany(mappedBy = "member",fetch = FetchType.LAZY)
+  @JsonBackReference
   private List<Comment> comments;
 
 

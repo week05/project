@@ -21,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class CommentService {
 
   private final CommentRepository commentRepository;
-
   private final TokenProvider tokenProvider;
   private final PostService postService;
 
@@ -46,22 +45,40 @@ public class CommentService {
     if (null == post) {
       return ResponseDto.fail("NOT_FOUND", "존재하지 않는 게시글 id 입니다.");
     }
+      if (requestDto.getResponseTo()==null){
+        Comment comment = Comment.builder()
+                .member(member)
+                .post(post)
+                .content(requestDto.getContent())
+                .build();
+        commentRepository.save(comment);
+        return ResponseDto.success(
+                CommentResponseDto.builder()
+                        .id(comment.getId())
+                        .author(comment.getMember().getNickname())
+                        .content(comment.getContent())
+                        .createdAt(comment.getCreatedAt())
+                        .modifiedAt(comment.getModifiedAt())
+                        .build()
+        );
 
-    Comment comment = Comment.builder()
-        .member(member)
-        .post(post)
-        .content(requestDto.getContent())
-        .build();
-    commentRepository.save(comment);
-    return ResponseDto.success(
-        CommentResponseDto.builder()
-            .id(comment.getId())
-            .author(comment.getMember().getNickname())
-            .content(comment.getContent())
-            .createdAt(comment.getCreatedAt())
-            .modifiedAt(comment.getModifiedAt())
-            .build()
-    );
+      }
+      Comment comment = Comment.builder()
+              .member(member)
+              .post(post)
+              .responseTo(requestDto.getResponseTo())
+              .content(requestDto.getContent())
+              .build();
+        commentRepository.save(comment);
+        return ResponseDto.success(
+              CommentResponseDto.builder()
+                      .id(comment.getId())
+                      .author(comment.getMember().getNickname())
+                      .content(comment.getContent())
+                      .responseTo(requestDto.getResponseTo())
+                      .createdAt(comment.getCreatedAt())
+                      .modifiedAt(comment.getModifiedAt())
+                      .build());
   }
 
   @Transactional(readOnly = true)
@@ -75,7 +92,7 @@ public class CommentService {
     List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();
 
     for (Comment comment : commentList) {
-      commentResponseDtoList.add(
+        commentResponseDtoList.add(
           CommentResponseDto.builder()
               .id(comment.getId())
               .author(comment.getMember().getNickname())

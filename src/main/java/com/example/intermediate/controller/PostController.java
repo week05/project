@@ -35,6 +35,8 @@ public class PostController {
                                    HttpServletRequest request) {
     return postService.createPost(requestDto, request);
   }
+
+  //카테고리 번호로 가져오기
   @GetMapping(value="/post/category/{id}")
   public ResponseDto<?> categoryAll(@PathVariable Long id){
     return postService.categoryAllGet(id);
