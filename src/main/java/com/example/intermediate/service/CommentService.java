@@ -217,7 +217,7 @@ public class CommentService {
       return ResponseDto.fail("BAD_REQUEST", "작성자만 수정할 수 있습니다.");
     }
 
-    commentRepository.delete(comment);
+    commentRepository.deleteByIdOrResponseTo(id,id);
     return ResponseDto.success("success");
   }
 
