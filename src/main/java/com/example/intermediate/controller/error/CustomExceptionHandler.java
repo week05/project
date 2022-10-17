@@ -14,13 +14,13 @@ import java.util.List;
 public class CustomExceptionHandler {
 
     //서버 에러
-    @ExceptionHandler({ Exception.class })
-    protected ResponseEntity<Object> handleServerException(Exception ex) {
-      RestApiException error= new RestApiException(ErrorCode.INTERNAL_SERVER_ERROR.name(), ErrorCode.INTERNAL_SERVER_ERROR.getMessage());
-       return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(error);
-    }
+//    @ExceptionHandler({ Exception.class })
+//    protected ResponseEntity<Object> handleServerException(Exception ex) {
+//      RestApiException error= new RestApiException(ErrorCode.INTERNAL_SERVER_ERROR.name(), ErrorCode.INTERNAL_SERVER_ERROR.getMessage());
+//       return ResponseEntity
+//                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                .body(error);
+//    }
     //회원가입 정보 확인
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleApiRequestException(MethodArgumentNotValidException ex) {

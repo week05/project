@@ -14,6 +14,10 @@ import java.util.List;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -143,9 +147,20 @@ public class PostService {
 
 
   // 게시글 전체 조회
+//  @Transactional(readOnly = true)
+//  public ResponseDto<?> getAllPost(int page, int size, String sortBy, boolean isAsc) {
+//
+//    Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
+//    Sort sort = Sort.by(direction, sortBy);
+//    Pageable pageable = PageRequest.of(page, size, sort);
+//    Page<Post> post=postRepository.findAll(pageable);
+//    return ResponseDto.success(postRepository.findAll(pageable));
+////    return ResponseDto.success(postRepository.findAllByOrderByModifiedAtDesc());
+//  }
   @Transactional(readOnly = true)
-  public ResponseDto<?> getAllPost() {
-    return ResponseDto.success(postRepository.findAllByOrderByModifiedAtDesc());
+  public ResponseDto<?> getAllPost(Pageable pageable) {
+    return ResponseDto.success(postRepository.findAll(pageable));
+//    return ResponseDto.success(postRepository.findAllByOrderByModifiedAtDesc());
   }
 
 

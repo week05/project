@@ -2,6 +2,7 @@ package com.example.intermediate.controller;
 
 import com.example.intermediate.controller.request.PostRequestDto;
 import com.example.intermediate.controller.response.ResponseDto;
+import com.example.intermediate.domain.Post;
 import com.example.intermediate.domain.UserDetailsImpl;
 import com.example.intermediate.service.PostService;
 import javax.servlet.http.HttpServletRequest;
@@ -9,6 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -54,9 +58,19 @@ public class PostController {
   }
 
   // 게시글 전체 조회
+//  @GetMapping(value = "/post")
+//  public ResponseDto<?> getAllPosts(
+//          @RequestParam int page,
+//          @RequestParam int size,
+//          @RequestParam String sortBy,
+//          @RequestParam boolean isAsc
+//  ) {
+//     page = page-1;
+//    return postService.getAllPost(page,size,sortBy,isAsc);
+//  }
   @GetMapping(value = "/post")
-  public ResponseDto<?> getAllPosts() {
-    return postService.getAllPost();
+  public ResponseDto<?> getAllPosts(@PageableDefault(page =0, size = 10 ,sort ="title",direction = Sort.Direction.DESC) Pageable pageable){
+    return postService.getAllPost(pageable);
   }
 
   // 게시글 수정
