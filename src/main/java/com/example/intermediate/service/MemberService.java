@@ -1,5 +1,6 @@
 package com.example.intermediate.service;
 
+import com.example.intermediate.controller.error.ErrorCode;
 import com.example.intermediate.controller.response.MemberResponseDto;
 import com.example.intermediate.domain.Member;
 import com.example.intermediate.domain.RefreshToken;
@@ -12,6 +13,8 @@ import com.example.intermediate.repository.MemberRepository;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -32,13 +35,13 @@ public class MemberService {
   @Transactional
   public ResponseDto<?> createMember(MemberRequestDto requestDto) {
     if (null != isPresentMember(requestDto.getNickname())) {
-      return ResponseDto.fail("DUPLICATED_NICKNAME",
-          "중복된 닉네임 입니다.");
+      return ResponseDto.fail(ErrorCode.ALREADY_SAVED_ID.name(),
+          ErrorCode.ALREADY_SAVED_ID.getMessage());
     }
 
     if (!requestDto.getPassword().equals(requestDto.getPasswordConfirm())) {
-      return ResponseDto.fail("PASSWORDS_NOT_MATCHED",
-          "비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+      return ResponseDto.fail(ErrorCode.PASSWORDS_NOT_MATCHED.name(),
+          ErrorCode.PASSWORDS_NOT_MATCHED.getMessage());
     }
 
         Member member = Member.builder()
@@ -90,6 +93,8 @@ public class MemberService {
 
     // 로그아웃
     public ResponseDto<?> logout(HttpServletRequest request) {
+//        Verification verification=new Verification();
+//        verification.logout(request);
         if (!tokenProvider.validateToken(request.getHeader("Refresh-Token"))) {
             return ResponseDto.fail("INVALID_TOKEN", "Token이 유효하지 않습니다.");
         }
@@ -98,7 +103,7 @@ public class MemberService {
             return ResponseDto.fail("MEMBER_NOT_FOUND",
                     "사용자를 찾을 수 없습니다.");
         }
-
+//        Member member = tokenProvider.getMemberFromAuthentication();
         return tokenProvider.deleteRefreshToken(member);
     }
 
@@ -114,4 +119,18 @@ public class MemberService {
         response.addHeader("Access-Token-Expire-Time", tokenDto.getAccessTokenExpiresIn().toString());
     }
 
+//검증 과정 따로 빼기
+//public class Verification{
+//      public ResponseDto<Object> logout(HttpServletRequest request){
+//          if (!tokenProvider.validateToken(request.getHeader("Refresh-Token"))) {
+//              return ResponseDto.fail("INVALID_TOKEN", "Token이 유효하지 않습니다.");
+//          }
+//          Member member = tokenProvider.getMemberFromAuthentication();
+//          if (null == member) {
+//              return ResponseDto.fail("MEMBER_NOT_FOUND",
+//                      "사용자를 찾을 수 없습니다.");
+//          }
+//          return null;
+//      }
+//    }
 }
