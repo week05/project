@@ -122,11 +122,14 @@ public class PostService {
 
     // 작성 post들의 각 정보를 PostResponseDto에 기록하여 postlist에 저장
     for(Post post : posts){
+      List<Likes> likesCount=likesRepository.findByPost(post);
       postlist.add(
               PostResponseDto.builder()
                       .id(post.getId())
                       .title(post.getTitle())
                       .author(post.getMember().getNickname())
+                      .category(post.getCategory())
+                      .likesCount((long) likesCount.size())
                       .content(post.getContent())
                       .createdAt(post.getCreatedAt())
                       .modifiedAt(post.getModifiedAt())

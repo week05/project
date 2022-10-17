@@ -1,6 +1,7 @@
 package com.example.intermediate.configuration;
 
 //import com.example.intermediate.jwt.AccessDeniedHandlerException;
+
 import com.example.intermediate.jwt.AccessDeniedHandlerException;
 import com.example.intermediate.jwt.AuthenticationEntryPointException;
 import com.example.intermediate.jwt.TokenProvider;
@@ -27,53 +28,53 @@ import org.springframework.security.web.SecurityFilterChain;
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 public class SecurityConfiguration {
 
-  @Value("${jwt.secret}")
-  String SECRET_KEY;
-  private final TokenProvider tokenProvider;
-  private final UserDetailsServiceImpl userDetailsService;
-  private final AuthenticationEntryPointException authenticationEntryPointException;
-  private final AccessDeniedHandlerException accessDeniedHandlerException;
+    @Value("${jwt.secret}")
+    String SECRET_KEY;
+    private final TokenProvider tokenProvider;
+    private final UserDetailsServiceImpl userDetailsService;
+    private final AuthenticationEntryPointException authenticationEntryPointException;
+    private final AccessDeniedHandlerException accessDeniedHandlerException;
 
-  @Bean
-  public PasswordEncoder passwordEncoder() {
-    return new BCryptPasswordEncoder();
-  }
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
-  @Bean
-  @Order(SecurityProperties.BASIC_AUTH_ORDER)
-  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    http.cors();
+    @Bean
+    @Order(SecurityProperties.BASIC_AUTH_ORDER)
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.cors();
 
-    http.csrf().disable()
+        http.csrf().disable()
 
-        .exceptionHandling()
-        .authenticationEntryPoint(authenticationEntryPointException)
-        .accessDeniedHandler(accessDeniedHandlerException)
+                .exceptionHandling()
+                .authenticationEntryPoint(authenticationEntryPointException)
+                .accessDeniedHandler(accessDeniedHandlerException)
 
-        .and()
-        .sessionManagement()
-        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
 
-        .and()
-        .authorizeRequests()
-        .antMatchers("/api/member/**").permitAll()
-        .antMatchers("/api/post/**").permitAll()
-        .antMatchers("/api/comment/**").permitAll()
-        .antMatchers( "/v2/api-docs",
-                "/swagger-resources",
-                "/swagger-resources/**",
-                "/configuration/ui",
-                "/configuration/security",
-                "/swagger-ui.html",
-                "/webjars/**",
-                "/v3/api-docs/**",
-                "/swagger-ui/**").permitAll()
-        .anyRequest().authenticated()
+                .and()
+                .authorizeRequests()
+                .antMatchers("/api/member/**").permitAll()
+                .antMatchers("/api/post/**").permitAll()
+                .antMatchers("/api/comment/**").permitAll()
+                .antMatchers("/v2/api-docs",
+                        "/swagger-resources",
+                        "/swagger-resources/**",
+                        "/configuration/ui",
+                        "/configuration/security",
+                        "/swagger-ui.html",
+                        "/webjars/**",
+                        "/v3/api-docs/**",
+                        "/swagger-ui/**").permitAll()
+                .anyRequest().authenticated()
 
-        .and()
-        .apply(new JwtSecurityConfiguration(SECRET_KEY, tokenProvider, userDetailsService));
+                .and()
+                .apply(new JwtSecurityConfiguration(SECRET_KEY, tokenProvider, userDetailsService));
 
-    return http.build();
-  }
+        return http.build();
+    }
 }
