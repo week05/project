@@ -1,4 +1,4 @@
-package com.example.intermediate.controller;
+package com.example.intermediate.controller.error;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +12,15 @@ import java.util.List;
 
 @RestControllerAdvice
 public class CustomExceptionHandler {
+
+    @ExceptionHandler({ Exception.class })
+    protected ResponseEntity<Object> handleServerException(Exception ex) {
+      RestApiException error= new RestApiException(ErrorCode.INTERNAL_SERVER_ERROR.name(), ErrorCode.INTERNAL_SERVER_ERROR.getMessage());
+       return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(error);
+    }
+    //
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleApiRequestException(MethodArgumentNotValidException ex) {
         List<RestApiException> errors=new ArrayList<>();
@@ -24,4 +33,6 @@ public class CustomExceptionHandler {
                 .status(HttpStatus.BAD_REQUEST)
                 .body(errors);
     }
+
+
 }

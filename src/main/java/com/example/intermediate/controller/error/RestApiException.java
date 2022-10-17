@@ -1,10 +1,8 @@
-package com.example.intermediate.controller;
+package com.example.intermediate.controller.error;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.http.HttpStatus;
 
 @Getter
 @Setter
