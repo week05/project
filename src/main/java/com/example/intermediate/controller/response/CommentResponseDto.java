@@ -1,6 +1,10 @@
 package com.example.intermediate.controller.response;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.example.intermediate.domain.Comment;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
